@@ -374,9 +374,10 @@ def build_live_role_scoped_db_context(user_role: str = "EMPLOYEE", user_name: st
                 emps = db.query(models.Employee).all()
                 cands = db.query(models.CandidateProfile).all()
                 tasks = db.query(models.Task).all()
+                hrvs = {v.candidate_id: v for v in db.query(models.HRVerification).all()}
                 interns_c = sum(1 for c in cands if c.candidate_type == "Intern")
                 ftes_c = sum(1 for c in cands if c.candidate_type == "Employee")
-                pending_apps = sum(1 for c in cands if (c.overall_onboarding_status or "").upper() in ("PENDING", "UNDER_REVIEW", "IN_PROGRESS"))
+                pending_apps = sum(1 for c in cands if (hrvs.get(c.candidate_id).overall_onboarding_status if hrvs.get(c.candidate_id) else "PENDING").upper() in ("PENDING", "UNDER_REVIEW", "IN_PROGRESS"))
                 lines.append(
                     f"• Live HR & Enterprise Governance Master Summary (Authorized for {caller_name} - {role}):\n"
                     f"  - Active Core Employees Table: {len(emps)} | Onboarding Candidate Profiles: {len(cands)} ({ftes_c} Employees, {interns_c} Interns)\n"
@@ -384,7 +385,7 @@ def build_live_role_scoped_db_context(user_role: str = "EMPLOYEE", user_name: st
                     f"  - Total Tracked Engineering Tasks: {len(tasks)}"
                 )
                 cand_list = [
-                    f"  - {c.candidate_id}: {c.full_name} ({c.candidate_type}) — Status: {c.overall_onboarding_status}"
+                    f"  - {c.candidate_id}: {c.full_name} ({c.candidate_type}) — Status: {(hrvs.get(c.candidate_id).overall_onboarding_status if hrvs.get(c.candidate_id) else 'PENDING')}"
                     for c in cands[:15]
                 ]
                 if cand_list:

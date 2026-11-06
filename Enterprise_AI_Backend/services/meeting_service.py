@@ -13,11 +13,28 @@ from models import Meeting
 
 load_dotenv()
 
-_groq_api_key = os.getenv("GROQ_API_KEY")
-if not _groq_api_key:
-    raise RuntimeError("GROQ_API_KEY environment variable is missing in backend .env")
+_groq_api_key = (os.getenv("GROQ_API_KEY") or "").strip()
+client = None
+if _groq_api_key:
+    try:
+        client = Groq(api_key=_groq_api_key)
+    except Exception:
+        client = None
 
-client = Groq(api_key=_groq_api_key)
+def get_groq_client():
+    global client
+    key = (os.getenv("GROQ_API_KEY") or "").strip()
+    if not key:
+        raise HTTPException(
+            status_code=400,
+            detail="GROQ_API_KEY is not configured in Enterprise_AI_Backend/.env. Please configure your Groq Cloud API key to transcribe and analyze audio."
+        )
+    if client is None:
+        try:
+            client = Groq(api_key=key)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to initialize Groq client: {e}")
+    return client
 
 AUDIO_UPLOAD_DIR = os.path.join("uploads", "audio")
 os.makedirs(AUDIO_UPLOAD_DIR, exist_ok=True)
@@ -133,11 +150,13 @@ def process_meeting_audio(file_bytes: bytes, original_filename: str, db: Session
         "Audio may contain sprint deliverables, technical architecture, speeches, or background music/songs."
     )
 
+    gclient = get_groq_client()
+
     try:
         with open(audio_filepath, "rb") as audio_file:
             audio_bytes_read = audio_file.read()
 
-        transcription = client.audio.transcriptions.create(
+        transcription = gclient.audio.transcriptions.create(
             file=(unique_audio_filename, audio_bytes_read),
             model="whisper-large-v3",
             response_format="verbose_json",
@@ -164,7 +183,7 @@ def process_meeting_audio(file_bytes: bytes, original_filename: str, db: Session
     
     if is_non_english:
         try:
-            translation_res = client.audio.translations.create(
+            translation_res = gclient.audio.translations.create(
                 file=(unique_audio_filename, audio_bytes_read),
                 model="whisper-large-v3",
                 prompt="Translate Indian multilingual speech, Hindi, Hinglish, regional language or audio lyrics into clear English."
@@ -222,7 +241,7 @@ Audio Data:
 Return ONLY the raw valid JSON object:"""
 
     try:
-        completion = client.chat.completions.create(
+        completion = gclient.chat.completions.create(
             model="openai/gpt-oss-120b",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2

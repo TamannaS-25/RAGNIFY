@@ -7,8 +7,13 @@ import os
 from database import engine, Base
 import models
 
-# Create all database tables
+# Create all database tables and seed initial data
 Base.metadata.create_all(bind=engine)
+try:
+    from seed_database import seed_all
+    seed_all()
+except Exception as e:
+    print(f"Database seed notice: {e}")
 
 # Import Routers
 from routers import auth

@@ -157,8 +157,8 @@ ragnify-enterprise-ai/
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/your-username/ragnify-enterprise-ai.git
-cd ragnify-enterprise-ai
+git clone https://github.com/TamannaS-25/ExcueAI-.git
+cd ExcueAI-
 ```
 
 ---

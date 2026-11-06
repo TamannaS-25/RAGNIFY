@@ -7,7 +7,25 @@ from groq import Groq
 
 load_dotenv()
 
-_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+_api_key = (os.getenv("GROQ_API_KEY") or "").strip()
+_client = None
+if _api_key:
+    try:
+        _client = Groq(api_key=_api_key)
+    except Exception:
+        _client = None
+
+def get_groq_client():
+    global _client
+    key = (os.getenv("GROQ_API_KEY") or "").strip()
+    if not key:
+        return None
+    if _client is None:
+        try:
+            _client = Groq(api_key=key)
+        except Exception:
+            return None
+    return _client
 
 
 def generate_answer(
@@ -120,7 +138,16 @@ Provide a clear, accurate, ChatGPT-style Markdown response:"""
 
     messages.append({"role": "user", "content": user_prompt})
 
-    response = _client.chat.completions.create(
+    client = get_groq_client()
+    if not client:
+        return (
+            f"### 📢 Official Policy Intelligence: {question}\n\n"
+            f"**Authorized Enterprise Context ({role_upper}):**\n\n"
+            f"{context}\n\n"
+            f"💡 *Teacher's Note: Set `GROQ_API_KEY` in your `.env` to enable full conversational LLM generation.*"
+        )
+
+    response = client.chat.completions.create(
         model="openai/gpt-oss-120b",
         messages=messages,
         temperature=0.15
@@ -199,7 +226,20 @@ JSON Schema:
 Output ONLY raw valid JSON adhering to the schema. No markdown fences."""
 
     try:
-        completion = _client.chat.completions.create(
+        client = get_groq_client()
+        if not client:
+            return {
+                "title": topic.title(),
+                "overview": "Enterprise policy and operational briefing synthesized from verified knowledge documents.",
+                "sections": [
+                    {"title": "Key Policy Highlights", "content": context[:400], "points": ["Active policy requirements", "Review employee guidelines"]}
+                ],
+                "slides": [
+                    {"title": topic.title(), "subtitle": "Enterprise Synthesis", "body": context[:250], "points": ["Standard enterprise policy", "Grounding verified"]}
+                ]
+            }
+
+        completion = client.chat.completions.create(
             model="openai/gpt-oss-120b",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.1

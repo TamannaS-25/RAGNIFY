@@ -13,7 +13,7 @@ router = APIRouter(
     tags=["Documents Hub"]
 )
 
-DOCS_DIR = r"E:\RAGNIFY HR & Onboarding Automation\Enterprise_AI_Backend\uploads\documents"
+DOCS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads", "documents")
 os.makedirs(DOCS_DIR, exist_ok=True)
 
 

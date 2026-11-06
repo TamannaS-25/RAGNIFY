@@ -113,7 +113,7 @@ def resolve_department_key(dept_name: str) -> str:
 
 
 def scan_resume_and_calculate_match(candidate_id: str, department: str, cand_docs: list, extra_context: list = None) -> dict:
-    docs_dir = r"E:\RAGNIFY HR & Onboarding Automation\Enterprise_AI_Backend\uploads\documents"
+    docs_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads", "documents")
     dept_key = resolve_department_key(department)
     specs = DEPARTMENT_KEYWORD_SPECS.get(dept_key, DEPARTMENT_KEYWORD_SPECS["ENGINEERING"])
     keyword_names = [kw for kw, _ in specs]
@@ -204,7 +204,7 @@ def delete_candidate_application(candidate_id: str, db: Session):
     Permanently and automatically deletes a candidate application, all associated
     compliance documents, physical uploaded files on disk, and database rows across all tables.
     """
-    docs_dir = r"E:\RAGNIFY HR & Onboarding Automation\Enterprise_AI_Backend\uploads\documents"
+    docs_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads", "documents")
 
     # 1. Clean up physical document files on disk
     try:
@@ -502,7 +502,7 @@ async def submit_application(request: Request, db: Session = Depends(get_db)):
     if not email:
         email = f"{cand_id.lower()}@ragnify-applicant.com"
 
-    docs_dir = r"E:\RAGNIFY HR & Onboarding Automation\Enterprise_AI_Backend\uploads\documents"
+    docs_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads", "documents")
     os.makedirs(docs_dir, exist_ok=True)
 
     # Determine photo filename if uploaded

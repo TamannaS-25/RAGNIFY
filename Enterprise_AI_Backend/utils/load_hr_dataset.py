@@ -4,16 +4,14 @@ import shutil
 from urllib.parse import quote_plus
 from sqlalchemy import create_engine, text
 
-# 1. Database Connection Setup
-PASSWORD = quote_plus("Shreya@8767")
-DATABASE_URL = f"postgresql://postgres:{PASSWORD}@localhost:5432/Task Management"
-engine = create_engine(DATABASE_URL)
+from database import engine
 
-DATASET_DIR = r"E:\RAGNIFY HR & Onboarding Automation\HR_onboaring datasets\datasets"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DATASET_DIR = os.path.join(BASE_DIR, "HR_onboaring datasets", "datasets")
 SCHEMA_SQL_PATH = os.path.join(DATASET_DIR, "schema.sql")
 JSON_PATH = os.path.join(DATASET_DIR, "master_candidates.json")
 DOCS_SRC_DIR = os.path.join(DATASET_DIR, "RAGNIFY_GENERATED_DOCUMENTS")
-BACKEND_DOCS_DEST = r"E:\RAGNIFY HR & Onboarding Automation\Enterprise_AI_Backend\uploads\documents"
+BACKEND_DOCS_DEST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads", "documents")
 
 def clean_date(val):
     if not val or str(val).strip() == "" or str(val).strip().lower() == "none":
