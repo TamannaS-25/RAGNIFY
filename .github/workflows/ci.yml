@@ -1,0 +1,60 @@
+name: RAGNIFY Platform CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-test:
+    name: Backend API & RAG Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'Enterprise_AI_Backend/requirements.txt'
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r Enterprise_AI_Backend/requirements.txt
+
+      - name: Run Backend Integration & DB Tests
+        working-directory: ./Enterprise_AI_Backend
+        env:
+          DATABASE_URL: sqlite:///./ragnify.db
+          SECRET_KEY: test_secret_key_12345
+        run: |
+          python seed_database.py
+          python test_backend.py
+
+  frontend-build:
+    name: Frontend Vite Production Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'Ragnify_Frontend/package-lock.json'
+
+      - name: Install frontend dependencies
+        working-directory: ./Ragnify_Frontend
+        run: npm ci
+
+      - name: Build frontend application
+        working-directory: ./Ragnify_Frontend
+        run: npm run build

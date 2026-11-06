@@ -6,6 +6,7 @@
 [![Groq](https://img.shields.io/badge/LLM%20Inference-Groq%20Cloud-F05032)](https://groq.com/)
 [![ChromaDB](https://img.shields.io/badge/Vector%20Store-ChromaDB-FF6F00)](https://www.trychroma.com/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/TamannaS-25/RAGNIFY/actions/workflows/ci.yml/badge.svg)](https://github.com/TamannaS-25/RAGNIFY/actions)
 
 > **RAGNIFY** is an all-in-one Enterprise AI ecosystem that streamlines corporate onboarding, recruitment screening, organizational policy intelligence, and executive meeting analytics. Powered by Retrieval-Augmented Generation (RAG), Automated ATS Resume Scoring, and Multilingual Audio Intelligence.
 
@@ -157,8 +158,8 @@ ragnify-enterprise-ai/
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/TamannaS-25/ExcueAI-.git
-cd ExcueAI-
+git clone https://github.com/TamannaS-25/RAGNIFY.git
+cd RAGNIFY
 ```
 
 ---
