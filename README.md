@@ -223,7 +223,7 @@ Frontend portal will be live at: `http://localhost:5173`
 | **Shreya Bawankule** | Priyadarshini College of Engineering, Nagpur | Robotics & Artificial Intelligence |
 | **Shruti Ghumgaonkar** | Priyadarshini College of Engineering, Nagpur | Robotics & Artificial Intelligence |
 | **Mansi Faldu** | Priyadarshini College of Engineering, Nagpur | Robotics & Artificial Intelligence |
-| **Tammana Sahare** | Priyadarshini College of Engineering, Nagpur | Robotics & Artificial Intelligence |
+| **Tamanna Sahare** | Priyadarshini College of Engineering, Nagpur | Robotics & Artificial Intelligence |
 | **Vishal Thakre** | Priyadarshini College of Engineering, Nagpur | Robotics & Artificial Intelligence |
 
 ---
